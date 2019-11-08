@@ -92,7 +92,7 @@ def min(arg1: _T, arg2: _T, arg3: _T, arg4: _T, arg5: _T, *args: _T, key: Callab
 def next(iterator: Iterator[_T], default: _T2 = ...) -> _T or _T2
 def oct(number: int) -> str
 def open(name: str or buffer or unicode, mode: Text = ..., buffering: int = ...) -> file
-def ord(c: str or unicode) -> int
+def ord(c: str or unicode or char) -> int
 def pow(x: int, y: int, ...) -> float or int
 def pow(x: int or float or complex, y: complex, ...) -> complex
 def pow(x: int or float, y: float, ...) -> float
@@ -212,8 +212,46 @@ class classmethod(typing.Callable):
     def __init__(self, func) -> NoneType
     def __get__(self, ...) -> ?
 
+class char(basestring):
+    def capitalize(self) -> char
+    def __add__(self, y: str) -> str
+    def __add__(self, y: char) -> str
+    def join(self, words: Iterable[AnyStr]) -> AnyStr
+    def capitalize(self,) -> char
+    def isalnum(self) -> bool
+    def isalpha(self) -> bool
+    def isdigit(self) -> bool
+    def islower(self) -> bool
+    def isspace(self) -> bool
+    def istitle(self) -> bool
+    def isupper(self) -> bool
+    def upper(self) -> char
+    def lower(self) -> char
+    def decode(self, ...) -> unichar
+    def encode(self, ...) -> char
+    def __mul__(self, n: int) -> str
+
+class unichar(basestring):
+    def capitalize(self) -> unichar
+    def __add__(self, y: str) -> str
+    def __add__(self, y: char) -> str
+    def join(self, words: Iterable[AnyStr]) -> AnyStr
+    def capitalize(self,) -> unichar
+    def isalnum(self) -> bool
+    def isalpha(self) -> bool
+    def isdigit(self) -> bool
+    def islower(self) -> bool
+    def isspace(self) -> bool
+    def istitle(self) -> bool
+    def isupper(self) -> bool
+    def upper(self) -> unichar
+    def lower(self) -> unichar
+    def decode(self, ...) -> unichar
+    def encode(self, ...) -> char
+    def __mul__(self, n: int) -> unicode
+
 _T_str = TypeVar('_T_str', bound=str)
-class str(basestring, Sequence[str]):
+class str(basestring, Sequence[char]):
     __slots__ = []
     def __init__(self, object) -> NoneType
     def __init__(self) -> NoneType
@@ -222,8 +260,11 @@ class str(basestring, Sequence[str]):
     def __add__(self, y: str) -> str
     def __add__(self, y: bytearray) -> bytearray
     def __add__(self, y: unicode) -> unicode
+	def __add__(self, y: char) -> str
     def __contains__(self, y: basestring) -> bool
-    def __getitem__(self, index: int or slice) -> str
+	def __iter__(self) -> Iterator[char]
+    def __getitem__(self, index: int) -> char
+    def __getitem__(self, index: slice) -> str
     def __getslice__(self, i: Optional[int], j: Optional[int]) -> str
     def __len__(self) -> int
     def __mod__(self, y: unicode) -> unicode
@@ -248,6 +289,8 @@ class str(basestring, Sequence[str]):
     def isupper(self) -> bool
     def join(self, iterable: Iterable[nothing]) -> str
     def join(self, iterable: Iterable[str]) -> str
+    def join(self, iterable: Iterable[char]) -> str
+    def join(self, iterable: Iterable[unichar]) -> unicode
     def join(self, iterable: Iterable[unicode]) -> unicode
     def ljust(self, width: int, ...) -> str
     def lower(self) -> str
@@ -259,6 +302,7 @@ class str(basestring, Sequence[str]):
     def rfind(self, sub: basestring or bytearray, ...) -> int
     def rindex(self, sub: basestring or bytearray, ...) -> int
     def rjust(self, width: int, ...) -> str
+	# Need a bunch of additional overrides for `sep: char -> tuple[str, char, str]` etc. here.
     def rpartition(self, sep: str or bytearray) -> tuple[str, str, str]
     def rpartition(self, sep: unicode) -> tuple[unicode, unicode, unicode]
     def rsplit(self, ...) -> list[str]
@@ -278,6 +322,7 @@ class str(basestring, Sequence[str]):
 
 bytes = str
 
+# Same set of overrides need to be done here.
 class unicode(basestring, Sequence[unicode]):
     __slots__ = []
     def __init__(self, string, ...) -> NoneType
